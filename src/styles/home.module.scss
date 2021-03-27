@@ -1,0 +1,59 @@
+// TODO
+.content {
+  main {
+    margin-top: 4rem;
+  }
+
+  .post {
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--heading-text);
+    }
+
+    h2 {
+      margin-top: 0.5rem;
+      font-size: 1.125rem;
+      font-weight: 400;
+      color: var(--body-text);
+    }
+
+    & + .post {
+      margin-top: 4rem;
+    }
+
+    .info {
+      display: flex;
+      align-items: center;
+
+      margin-top: 1.5rem;
+
+      p {
+        display: flex;
+
+        & + p {
+          margin-left: 1.625rem;
+        }
+
+        i {
+          font-size: 1.2rem;
+          font-weight: bold;
+          color: var(--info-text);
+        }
+
+        span {
+          font-size: 0.875rem;
+          line-height: 1.125rem;
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+
+  button {
+    border: none;
+    background: var(--background);
+    color: var(--highlight-text);
+    margin-top: 4rem;
+  }
+}

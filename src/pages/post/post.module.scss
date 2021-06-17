@@ -73,4 +73,21 @@
       }
     }
   }
+
+  .exitPreview {
+    border: none;
+    border-radius: 4px;
+    height: 3.625rem;
+    background: var(--heading-text);
+    margin-top: 5.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    a {
+      color: var(--background);
+      font: 600 1.125rem "Inter", sans-serif;
+    }
+  }
 }

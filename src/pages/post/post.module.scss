@@ -48,6 +48,21 @@
     }
   }
 
+  .editadeInfo {
+    display: flex;
+    margin-top: 1.5rem;
+
+    span {
+      font-size: 0.875rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--info-text);
+
+      display: flex;
+      align-items: center;
+    }
+  }
+
   .postContent {
     font-size: 1.125rem;
     font-weight: 400;
@@ -71,6 +86,33 @@
       li {
         margin: 0.5rem 0;
       }
+    }
+  }
+
+  .navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 400;
+      color: var(--heading-text);
+      margin-bottom: 0.5rem;
+    }
+
+    a {
+      color: var(--highlight-text);
+      font-weight: 600;
+    }
+
+    div {
+      padding: 3rem 0;
+    }
+
+    div + div {
+      text-align: right;
     }
   }
 

@@ -20,6 +20,8 @@ import Comments from '../../components/Comments';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
+  last_publication_time: string | null;
   data: {
     title: string;
     banner: {
@@ -38,9 +40,23 @@ interface Post {
 interface PostProps {
   post: Post;
   preview: boolean;
+  navigation: {
+    prevPost: {
+      uid: string;
+      data: {
+        title: string;
+      }
+    }[];
+    nextPost: {
+      uid: string;
+      data: {
+        title: string;
+      }
+    }[];
+  }
 }
 
-export default function Post({ post, preview }: PostProps): JSX.Element {
+export default function Post({ post, navigation, preview }: PostProps): JSX.Element {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -86,11 +102,7 @@ export default function Post({ post, preview }: PostProps): JSX.Element {
           <div className={styles.info}>
             <span>
               <FiCalendar size={20} color="#BBBBBB" />
-              {format(new Date(post.first_publication_date),
-                'dd MMM yyyy',
-                {
-                  locale: ptBR,
-                })}
+              {post.first_publication_date}
             </span>
             <span>
               <FiUser size={20} color="#BBBBBB" />
@@ -102,6 +114,12 @@ export default function Post({ post, preview }: PostProps): JSX.Element {
             </span>
           </div>
 
+          {post.first_publication_date !== post.last_publication_date && (
+            <div className={styles.editadeInfo}>
+              <span>{`* editado em ${post.last_publication_date}, às ${post.last_publication_time}`}</span>
+            </div>
+          )}
+
           <div className={styles.postContent}>
             {post.data.content.map(({ heading, body }) => (
               <div key={heading}>
@@ -111,6 +129,29 @@ export default function Post({ post, preview }: PostProps): JSX.Element {
               </div>
             ))}
           </div>
+
+          <section className={`${commonStyles.container} ${styles.navigation}`}>
+
+            {navigation?.prevPost.length > 0 && (
+              <div>
+                <h3>{navigation.prevPost[0].data.title}</h3>
+                <Link href={`/post/${navigation.prevPost[0].uid}`} >
+                  <a>Post anterior</a>
+                </Link>
+              </div>
+            )}
+
+            {navigation?.nextPost.length > 0 && (
+              <div>
+                <h3>{navigation.nextPost[0].data.title}</h3>
+                <Link href={`/post/${navigation.nextPost[0].uid}`} >
+                  <a>Próximo post</a>
+                </Link>
+              </div>
+            )}
+
+
+          </section>
 
           <Comments />
 
@@ -165,9 +206,29 @@ export const getStaticProps: GetStaticProps = async ({
     ref: previewData?.ref || null,
   });
 
+  const prevPost = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')],
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.last_publication_date desc]'
+    }
+  )
+
+  const nextPost = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')],
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date]'
+    }
+  )
+
   const post = {
     uid: response.uid,
-    first_publication_date: response.first_publication_date,
+    first_publication_date: format(new Date(response.first_publication_date), "dd MMM yyyy", { locale: ptBR }),
+    last_publication_date: format(new Date(response.last_publication_date), "dd MMM yyyy", { locale: ptBR }),
+    last_publication_time: format(new Date(response.last_publication_date), "HH:mm", { locale: ptBR }),
     data: {
       title: response.data.title,
       subtitle: response.data.subtitle,
@@ -187,7 +248,11 @@ export const getStaticProps: GetStaticProps = async ({
   return {
     props: {
       post,
-      preview
+      preview,
+      navigation: {
+        prevPost: prevPost?.results,
+        nextPost: nextPost?.results,
+      }
     },
     revalidate: 60 * 60 * 24 // 24 hours
   }

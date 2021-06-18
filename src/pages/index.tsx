@@ -121,8 +121,6 @@ export default function Home({ postsPagination, preview }: HomeProps): JSX.Eleme
           )}
         </div>
       </main>
-
-
     </>
   );
 }
